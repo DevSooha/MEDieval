@@ -39,13 +39,6 @@ public class PlayerInteraction : MonoBehaviour
                 }
             }
         }
-
-        // 대화 상태에 따라 플레이어 이동 제어
-        if (playerMovement != null)
-        {
-            bool isDialogueActive = DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive();
-            playerMovement.SetCanMove(!isDialogueActive);
-        }
     }
 
     void InteractWithNPC()
@@ -55,13 +48,7 @@ public class PlayerInteraction : MonoBehaviour
             // NPC 방향 변경 (플레이어를 향하도록)
             Vector2 direction = (transform.position - currentNPC.transform.position).normalized;
             currentNPC.FaceDirection(direction);
-            
-            // 플레이어 이동 정지
-            if (playerMovement != null)
-            {
-                playerMovement.SetCanMove(false);
-            }
-            
+
             // 대화 시작
             DialogueManager.Instance.StartDialogue(currentNPC.dialogueData);
         }
