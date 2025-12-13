@@ -1,41 +1,49 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
 public class InventoryUIManager : MonoBehaviour
 {
-    [SerializeField] private Transform materialSlotContainer; 
-    [SerializeField] private Transform potionSlotContainer; 
-    [SerializeField] private GameObject slotPrefab;              
+    [SerializeField] private Transform materialSlotContainer;      // 왼쪽 인벤 슬롯 부모
+    [SerializeField] private Transform potionSlotContainer;        // 오른쪽 인벤 슬롯 부모
+    [SerializeField] private GameObject slotPrefab;                // 슬롯 프리팹
     [SerializeField] private Canvas canvas;
-    [SerializeField] private Text materialPageText;              
+    [SerializeField] private Text materialPageText;                // "페이지 1/5" 표시
     [SerializeField] private Text potionPageText;
+    [SerializeField] private GameObject tooltipPanel;
+    [SerializeField] private Text tooltipText;
 
     private Inventory materialInventory;
     private Inventory potionInventory;
-    private GameObject tooltipPanel;
-    private Text tooltipText;
     private float pageChangeSpeed = 0.05f;
     private bool isChangingPage = false;
 
     void Start()
     {
-        materialInventory = new Inventory(6);  
-        potionInventory = new Inventory(5);   
-  
+        // 인벤토리 초기화
+        materialInventory = new Inventory(6);  // 왼쪽: 6칸/페이지
+        potionInventory = new Inventory(5);    // 오른쪽: 5칸/페이지
+
+        // 툴팁 생성
         CreateTooltip();
 
+        // UI 초기 렌더링
         RefreshUI();
 
+        // 테스트 아이템 추가
         TestAddItems();
     }
 
     void Update()
     {
+        // 임시: 스페이스바로 왼쪽 페이지 넘기기
         if (Input.GetKeyDown(KeyCode.Space) && !isChangingPage)
         {
             StartCoroutine(ChangePageWithDelay(materialInventory, materialSlotContainer, materialPageText));
         }
+
+        // 임시: E키로 오른쪽 페이지 넘기기
         if (Input.GetKeyDown(KeyCode.E) && !isChangingPage)
         {
             StartCoroutine(ChangePageWithDelay(potionInventory, potionSlotContainer, potionPageText));
@@ -44,18 +52,6 @@ public class InventoryUIManager : MonoBehaviour
 
     void CreateTooltip()
     {
-        tooltipPanel = new GameObject("Tooltip");
-        tooltipPanel.transform.SetParent(canvas.transform);
-        Image img = tooltipPanel.AddComponent<Image>();
-        img.color = new Color(0, 0, 0, 0.9f);
-
-        tooltipText = new GameObject("Text").AddComponent<Text>();
-        tooltipText.transform.SetParent(tooltipPanel.transform);
-        tooltipText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        tooltipText.text = "";
-        tooltipText.color = Color.white;
-        tooltipText.alignment = TextAnchor.MiddleCenter;
-
         RectTransform rect = tooltipPanel.GetComponent<RectTransform>();
         rect.sizeDelta = new Vector2(150, 40);
         tooltipPanel.SetActive(false);
@@ -69,10 +65,7 @@ public class InventoryUIManager : MonoBehaviour
 
     void RefreshInventoryUI(Inventory inventory, Transform slotContainer, Text pageText)
     {
-        foreach (Transform child in slotContainer)
-        {
-            Destroy(child.gameObject);
-        }
+        // 현재 페이지의 슬롯 표시
         var currentSlots = inventory.GetCurrentPageSlots();
         foreach (var slot in currentSlots)
         {
@@ -93,8 +86,23 @@ public class InventoryUIManager : MonoBehaviour
                 {
                     itemNameText.text = slot.item.quantity.ToString();
                 }
+
+                // 툴팁 이벤트
+                EventTrigger trigger = slotObj.AddComponent<EventTrigger>();
+                
+                EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+                pointerEnter.eventID = EventTriggerType.PointerEnter;
+                pointerEnter.callback.AddListener(data => ShowTooltip(slot.item.itemName, ((PointerEventData)data).position));
+                trigger.triggers.Add(pointerEnter);
+
+                EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+                pointerExit.eventID = EventTriggerType.PointerExit;
+                pointerExit.callback.AddListener(data => HideTooltip());
+                trigger.triggers.Add(pointerExit);
             }
         }
+
+        // 페이지 텍스트 업데이트
         int totalPages = inventory.TotalPages > 0 ? inventory.TotalPages : 1;
         pageText.text = $"페이지 {inventory.CurrentPage + 1}/{totalPages}";
     }
@@ -123,7 +131,8 @@ public class InventoryUIManager : MonoBehaviour
 
     void TestAddItems()
     {
-        Sprite tempIcon = Resources.Load<Sprite>("Sprites/TestIcon");
+        // 테스트용 아이템 추가
+        Sprite tempIcon = Resources.Load<Sprite>("Sprites/TestIcon"); // 임시 아이콘
         
         Item herb = new Item("herb", "민트풀", 50, 99, tempIcon, 0);
         materialInventory.AddItem(herb);

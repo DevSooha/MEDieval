@@ -63,11 +63,20 @@ public class Inventory
     }
 
     // 슬롯 목록 가져오기 (현재 페이지)
-    public List<InventorySlot> GetCurrentPageSlots()
-    {
-        int startIndex = currentPage * slotsPerPage;
-        return slots.GetRange(startIndex, Mathf.Min(slotsPerPage, slots.Count - startIndex));
-    }
+   public List<InventorySlot> GetCurrentPageSlots()
+{
+    // ✅ 아이템이 있는 슬롯만 필터링
+    var nonEmptySlots = slots.Where(s => !s.isEmpty).ToList();
+    
+    // ✅ 페이지에 맞는 슬롯만 추출
+    int startIndex = currentPage * slotsPerPage;
+    int count = Mathf.Min(slotsPerPage, nonEmptySlots.Count - startIndex);
+    
+    if (startIndex >= nonEmptySlots.Count)
+        return new List<InventorySlot>();
+    
+    return nonEmptySlots.GetRange(startIndex, count);
+}
     public void NextPage()
     {
         int totalPages = TotalPages;
