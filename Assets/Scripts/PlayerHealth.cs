@@ -3,8 +3,8 @@ using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int HP=10;
-    public int maxHP=10;
+    public int HP;
+    public int maxHP;
     public TMP_Text healthBar;
 
     void Start()

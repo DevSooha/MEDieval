@@ -119,11 +119,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1
-        width: 31
-        height: 59
+        y: 2
+        width: 30
+        height: 57
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,12 +140,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uB3D9_1"
       rect:
         serializedVersion: 2
-        x: 31
-        y: 3
-        width: 32
-        height: 57
+        x: 32
+        y: 4
+        width: 30
+        height: 55
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uB3D9_2"
       rect:
         serializedVersion: 2
-        x: 63
-        y: 0
-        width: 32
-        height: 63
+        x: 64
+        y: 1
+        width: 30
+        height: 61
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uB3D9_3"
       rect:
         serializedVersion: 2
-        x: 95
+        x: 96
         y: 0
-        width: 32
-        height: 60
+        width: 30
+        height: 59
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uB3D9_4"
       rect:
         serializedVersion: 2
-        x: 127
-        y: 0
-        width: 32
-        height: 60
+        x: 128
+        y: 1
+        width: 30
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uB3D9_5"
       rect:
         serializedVersion: 2
-        x: 159
-        y: 2
-        width: 32
-        height: 61
+        x: 160
+        y: 3
+        width: 30
+        height: 59
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8f3c33d0fbe9f72409e3485946f27051
     internalID: 0
     vertices: []
     indices: 
@@ -258,7 +258,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":1,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       "RUN_\uB0A8\uB3D9_0": -3879166045040952445
       "RUN_\uB0A8\uB3D9_1": -1440219303790082219

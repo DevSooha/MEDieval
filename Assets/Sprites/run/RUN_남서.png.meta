@@ -118,12 +118,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_0"
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 31
-        height: 59
+        x: 2
+        y: 2
+        width: 29
+        height: 57
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,12 +140,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_1"
       rect:
         serializedVersion: 2
-        x: 33
-        y: 3
-        width: 31
-        height: 57
+        x: 34
+        y: 4
+        width: 29
+        height: 55
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_2"
       rect:
         serializedVersion: 2
-        x: 65
-        y: 0
-        width: 31
-        height: 63
+        x: 66
+        y: 1
+        width: 29
+        height: 61
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_3"
       rect:
         serializedVersion: 2
-        x: 97
+        x: 98
         y: 0
-        width: 31
-        height: 60
+        width: 29
+        height: 59
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_4"
       rect:
         serializedVersion: 2
-        x: 129
-        y: 0
-        width: 31
-        height: 60
+        x: 130
+        y: 1
+        width: 29
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: "RUN_\uB0A8\uC11C_5"
       rect:
         serializedVersion: 2
-        x: 161
-        y: 0
-        width: 31
-        height: 63
+        x: 162
+        y: 1
+        width: 29
+        height: 61
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 1db697b98a881974890e1bd6700deb05
     internalID: 0
     vertices: []
     indices: 
@@ -258,7 +258,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":1,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       "RUN_\uB0A8\uC11C_0": 3885154711136334400
       "RUN_\uB0A8\uC11C_1": 5711799059724740320

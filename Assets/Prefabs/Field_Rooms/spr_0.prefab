@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 9
   m_Sprite: {fileID: 21300000, guid: bc5629751bfd17c43accd0ad3bca6dd0, type: 3}
@@ -262,7 +262,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 2f5ed233e55b97149ac809248f1fe743, type: 3}
@@ -3971,7 +3971,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 5
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -4058,7 +4058,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 3de1cea7d63ff3c42a2e4b7b3e19ac9f, type: 3}
@@ -4188,7 +4188,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 53c62d0b640d2de41873b8b35964624f, type: 3}
@@ -4278,7 +4278,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 8fe37aa23ff8bb843ac30ed8e16df8d9, type: 3}
@@ -4444,6 +4444,14 @@ PrefabInstance:
     - target: {fileID: 775261350587403794, guid: 9b192c88dc3fa9343968f238e48968ab, type: 3}
       propertyPath: m_Name
       value: Skeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4812511325995141568, guid: 9b192c88dc3fa9343968f238e48968ab, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4812511325995141568, guid: 9b192c88dc3fa9343968f238e48968ab, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 825734181
       objectReference: {fileID: 0}
     - target: {fileID: 5569790205057511594, guid: 9b192c88dc3fa9343968f238e48968ab, type: 3}
       propertyPath: m_LocalPosition.x

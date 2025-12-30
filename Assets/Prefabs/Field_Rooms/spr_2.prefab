@@ -122,7 +122,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: ec325de44d172c5429ba4518d4fe5e0d, type: 3}
@@ -212,8 +212,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1562799643
-  m_SortingLayer: 3
+  m_SortingLayerID: 182476865
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 8334651344603559088, guid: 818d95ccfa39306499898b8fba140dd6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3281,7 +3281,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 5
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -3589,7 +3589,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: fabcc75b87282904095a70cb8847d072, type: 3}
@@ -3679,7 +3679,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: f49ccd5d87f26c843b20b0c9e4b597de, type: 3}
@@ -3769,7 +3769,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 224faf3f6d82ad5479d7923d8508f855, type: 3}
@@ -3859,7 +3859,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1051148005
+  m_SortingLayerID: 2096632557
   m_SortingLayer: 1
   m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: 6f5da5ca664836e45a42f7d8dc40095b, type: 3}
@@ -4333,6 +4333,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6932889064827933549, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6932889064827933549, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 825734181
+      objectReference: {fileID: 0}
     - target: {fileID: 8845568579499216891, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
       propertyPath: m_Name
       value: tree
@@ -4477,11 +4485,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3626916397498700004, guid: 86a241c9af5a6484cb4e9f85ff997dc4, type: 3}
       propertyPath: m_SortingLayer
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3626916397498700004, guid: 86a241c9af5a6484cb4e9f85ff997dc4, type: 3}
       propertyPath: m_SortingLayerID
-      value: 713526839
+      value: -1417951005
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: 86a241c9af5a6484cb4e9f85ff997dc4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4851,6 +4859,14 @@ PrefabInstance:
     - target: {fileID: 5681149279572575106, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6932889064827933549, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6932889064827933549, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 825734181
       objectReference: {fileID: 0}
     - target: {fileID: 8845568579499216891, guid: 07cd13de87475a249a5c778cb920d6fd, type: 3}
       propertyPath: m_Name
