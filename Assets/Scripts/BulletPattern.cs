@@ -70,24 +70,27 @@ else
     private void FireBullet()
     {
         Vector2[] directions = GetDirections();
-        
+
         foreach (Vector2 direction in directions)
         {
-                Vector3 spawnPos = explosionCenter;
+            Vector3 spawnPos = explosionCenter; // 혹은 transform.position
 
-                GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
-                Bullet bullet = bulletObj.GetComponent<Bullet>();
-                
-                if (bullet != null)
-                {
-                    bullet.Initialize(
-                        direction,
-                        patternData.bulletSpeed,
-                        patternData.damage,
-                        patternData.bulletEffect
-                    );
-                }
-            
+            GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
+
+            if (bullet != null)
+            {
+                // ★ 수정됨: PotionEffect와 effectTime을 넘겨줍니다.
+                // patternData에 effectTime이 없다면 potionData에서 가져오거나 기본값을 넣어야 합니다.
+                // 여기서는 patternData에 해당 필드가 있다고 가정합니다.
+                bullet.Initialize(
+                    direction,
+                    patternData.bulletSpeed,
+                    patternData.damage,
+                    patternData.potionEffect, // 효과 전달
+                    patternData.effectTime    // 지속 시간 전달
+                );
+            }
         }
 
         Debug.Log($"[{patternData.element}] {patternData.bulletType} 탄막 발사! (Time: {elapsedTime:F2}s)");

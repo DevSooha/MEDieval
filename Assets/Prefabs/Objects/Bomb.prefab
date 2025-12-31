@@ -45,11 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0c6ce28f560184388b5c6a06f22fac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bomb
-  bombElement: 2
-  baseDamage: 200
   timeToExplode: 2
-  explosionRadius: 1.5
-  explosionEffect: {fileID: 0}
+  envDestructionRadius: 1.5
+  potionExplosionPrefab: {fileID: 2106239423698665555, guid: 05f624f3da07fc8459f1a479f0ea3212, type: 3}
+  bulletPatternPrefab: {fileID: 7070370320491528472, guid: 3b1be7dfe3b260241b0a63ecd7d43232, type: 3}
+  bulletPrefabBlue: {fileID: 4447743839898354513, guid: ce9cc11006b632440a4bafe834e81a88, type: 3}
+  bulletPrefabRed: {fileID: 4137174238240989161, guid: 968f9b25ae4cde943905c0a239ad8853, type: 3}
+  bulletPrefabGreen: {fileID: 1114039531541617289, guid: 075f27197d573b74ab8c64269aacdde3, type: 3}
 --- !u!212 &1165381254583271831
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -95,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 825734181
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 10
   m_Sprite: {fileID: -1483665779731714255, guid: 5f9d8faca5f85ef4cb91053c9d5e60d7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

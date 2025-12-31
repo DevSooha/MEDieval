@@ -2,12 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Cinemachine을 안 쓴다면 이 줄은 없어도 됩니다. (에러나면 지우세요)
-// using Cinemachine; 
-
 public class Player : MonoBehaviour
 {
-    // ★ 전 세계에 단 하나뿐인 플레이어 (싱글톤)
+    // 플레이어 (싱글톤)
     public static Player Instance { get; private set; }
 
     [Header("Movement Settings")]
@@ -23,6 +20,8 @@ public class Player : MonoBehaviour
     // 위치 저장 변수
     private Vector3 savedPosition;
     private bool hasSavedPosition = false;
+
+    public bool HasSavedPosition => hasSavedPosition;
 
     [Header("Animation Settings")]
     private Vector2 lastDirection;
@@ -196,7 +195,7 @@ public class Player : MonoBehaviour
         animator.ResetTrigger("IsAttack");
     }
 
-    // --- 씬 이동 및 위치 저장 관련 (중복 제거 및 정리됨) ---
+    // --- 씬 이동 및 위치 저장 관련 ---
 
     void OnEnable()
     {
@@ -209,65 +208,66 @@ public class Player : MonoBehaviour
     }
 
     // 씬 로드 시 위치 복구 및 카메라 연결
-    // 1. 이 함수를 통째로 교체하세요
+    // Player.cs 안의 OnSceneLoaded 함수 수정
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // 1. 화면 밝아지기 (페이드 인) - 0.5초 동안
+        if (FadeManager.Instance != null)
+        {
+            StartCoroutine(FadeManager.Instance.FadeIn(0.5f));
+        }
+
+        // 2. 위치 잡기
         if (scene.name == "Field" || scene.name == "MainScene")
         {
             if (hasSavedPosition)
             {
-                transform.position = savedPosition;
+                transform.position = savedPosition; // 저장된 위치로 복구
+                if (rb != null) rb.linearVelocity = Vector2.zero; // 미끄러짐 방지
             }
-
             SetCanMove(true);
 
-            // ★ 바로 옮기지 말고, 0.1초만 기다렸다가 옮깁니다! (이게 핵심)
+            // 카메라 맞추기
             StartCoroutine(ForceCameraSync());
+        }
+        else // 제작 씬, 포션 씬 등
+        {
+            // 미니게임 씬에서는 (0,0)이나 지정된 스폰 포인트로 강제 이동
+            transform.position = new Vector3(0, 0, 0);
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            SetCanMove(true);
         }
     }
 
-    // Player.cs
-
     IEnumerator ForceCameraSync()
     {
-        // 1. 다른 스크립트들이 초기화될 때까지 충분히 기다림
-        yield return null;
-        yield return new WaitForEndOfFrame();
+        // ★ 핵심 수정: 0.1초를 확실히 기다려서 다른 매니저들의 초기화(카메라 리셋 등)가 끝난 뒤에 실행
+        yield return new WaitForSeconds(0.1f);
 
-        // 2. 룸매니저 찾기
+        // 룸매니저 찾기 (씬이 바뀌었으므로 새로 찾아야 함)
         RoomManager roomManager = FindFirstObjectByType<RoomManager>();
 
         if (roomManager != null)
         {
-            // ★★★ "룸매니저야, 내가 있는 방으로 카메라 좀 맞춰줘!" ★★★
+            // "룸매니저님, 저 여기(savedPosition)에 있으니까 카메라 맞춰주세요"
             roomManager.SyncCameraToPlayer();
         }
         else
         {
-            // 룸매니저가 없으면(테스트 씬 등) 그냥 내가 카메라 옮김
+            // 룸매니저가 없는 경우 비상 대책: 직접 메인 카메라 옮기기
             if (Camera.main != null)
             {
                 Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10f);
             }
         }
-
-        // 3. 시네머신 쓴다면 여기서 갱신 (안 쓰면 무시)
-        /*
-        var vCam = FindFirstObjectByType<Cinemachine.CinemachineVirtualCamera>();
-        if (vCam != null)
-        {
-            vCam.Follow = transform;
-            vCam.OnTargetObjectWarped(transform, transform.position - vCam.transform.position);
-        }
-        */
     }
 
-    // ★ 위치 저장 함수 (클래스 안으로 들어옴)
+    // 위치 저장 함수
     public void SaveCurrentPosition()
     {
         savedPosition = transform.position;
         hasSavedPosition = true;
         Debug.Log($"좌표 저장됨: {savedPosition}");
     }
-
-} // Player 클래스 끝
+}

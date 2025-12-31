@@ -290,19 +290,19 @@ public class PlayerAttackSystem : MonoBehaviour
 
         if (!IsValidTile(spawnPos)) return;
 
-        // 슬롯에 있는 프리팹 사용, 없으면 기본 프리팹 사용
         GameObject prefabToUse = slots[0].specificPrefab != null ? slots[0].specificPrefab : defaultBombPrefab;
 
         if (prefabToUse != null)
         {
-            GameObject bomb = Instantiate(prefabToUse, spawnPos, Quaternion.identity);
+            GameObject bombObj = Instantiate(prefabToUse, spawnPos, Quaternion.identity);
 
-            // 폭탄에 데이터 전달 (PotionManager 연동을 위해 PotionData 전달 가능)
-            PotionExplosion explosion = bomb.GetComponent<PotionExplosion>();
-            if (explosion != null && slots[0].itemData is PotionData pData)
+            // ★ 수정된 부분: Bomb 스크립트를 가져와서 데이터를 넣어줍니다.
+            Bomb bombScript = bombObj.GetComponent<Bomb>();
+
+            // 현재 슬롯의 아이템 데이터가 PotionData라면 주입
+            if (bombScript != null && slots[0].itemData is PotionData pData)
             {
-                // 여기서 Initialize 등을 호출해줄 수 있음
-                // explosion.Initialize(pData, ...); 
+                bombScript.Initialize(pData);
             }
 
             UseAmmo(1);

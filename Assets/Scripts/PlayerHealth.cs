@@ -32,6 +32,21 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    // ★ [추가된 부분] 체력 회복 함수
+    public void Heal(int amount)
+    {
+        HP += amount;
+
+        // 최대 체력을 넘지 않게 고정
+        if (HP > maxHP)
+        {
+            HP = maxHP;
+        }
+
+        UpdateHealthBar();
+        Debug.Log($"체력 회복! 현재 HP: {HP}");
+    }
+
     private void UpdateHealthBar()
     {
         if (healthBar != null)

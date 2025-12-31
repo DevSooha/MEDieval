@@ -29,6 +29,13 @@ public class InventoryUI : MonoBehaviour
     private int materialCurrentPage = 0;
     private int potionCurrentPage = 0;
 
+    private PlayerAttackSystem cachedAttackSystem; // 캐싱용 변수 추가
+
+    private void OnEnable() // 혹은 Start()
+    {
+        // UI가 켜질 때 미리 찾아둡니다.
+        cachedAttackSystem = FindFirstObjectByType<PlayerAttackSystem>();
+    }
 
     private void Awake()
     {
@@ -118,22 +125,16 @@ public class InventoryUI : MonoBehaviour
         if (selectedItem == null || selectedItem.data == null)
             return;
 
-        // 1. 재료 클릭 시 (크래프팅 UI로 전달)
-        if (category == ItemCategory.Material && craftUI != null)
-        {
-            craftUI.OnMaterialSelected(selectedItem);
-        }
-
-        // ★ [수정됨] 포션 장착 연결 부분
         if (category == ItemCategory.Potion)
         {
-            // 1. PlayerAttackSystem 찾기
-            PlayerAttackSystem attackSystem = FindFirstObjectByType<PlayerAttackSystem>();
+            // 만약 캐싱된 게 없으면 그때 한번 더 찾아봄 (안전장치)
+            if (cachedAttackSystem == null)
+                cachedAttackSystem = FindFirstObjectByType<PlayerAttackSystem>();
 
-            if (attackSystem != null)
+            if (cachedAttackSystem != null)
             {
-                // 2. 장착 함수 호출!
-                attackSystem.EquipPotionFromInventory(selectedItem);
+                cachedAttackSystem.EquipPotionFromInventory(selectedItem);
+                Debug.Log($"포션 장착 요청: {selectedItem.data.name}"); // 디버그 로그 추가 추천
             }
         }
     }

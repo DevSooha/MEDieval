@@ -18,46 +18,31 @@ public class FadeManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public IEnumerator FadeOut(float duration)
-    {
-        // ★ 씬 바뀌어서 놓쳤으면 다시 찾아라
-        if (fadeImage == null)
-        {
-            GameObject obj = GameObject.Find("FadeImage"); // 이름 중요!!
-            if (obj != null) fadeImage = obj.GetComponent<Image>();
-        }
-
-        if (fadeImage != null)
-        {
-            float t = 0;
-            while (t < duration)
-            {
-                t += Time.deltaTime;
-                if (fadeImage != null)
-                    fadeImage.color = new Color(0, 0, 0, t / duration);
-                yield return null;
-            }
-        }
-    }
-
+    // ★ 화면 밝아지기 (씬 시작할 때 씀)
     public IEnumerator FadeIn(float duration)
     {
-        if (fadeImage == null)
+        float t = 0;
+        while (t < duration)
         {
-            GameObject obj = GameObject.Find("FadeImage");
-            if (obj != null) fadeImage = obj.GetComponent<Image>();
+            t += Time.deltaTime;
+            // 알파값: 1(검정) -> 0(투명)
+            fadeImage.color = new Color(0, 0, 0, 1f - (t / duration));
+            yield return null;
         }
+        fadeImage.color = new Color(0, 0, 0, 0); // 완전히 투명하게
+    }
 
-        if (fadeImage != null)
+    // 화면 어두워지기 (씬 이동할 때 씀)
+    public IEnumerator FadeOut(float duration)
+    {
+        float t = 0;
+        while (t < duration)
         {
-            float t = 0;
-            while (t < duration)
-            {
-                t += Time.deltaTime;
-                if (fadeImage != null)
-                    fadeImage.color = new Color(0, 0, 0, 1f - (t / duration));
-                yield return null;
-            }
+            t += Time.deltaTime;
+            // 알파값: 0(투명) -> 1(검정)
+            fadeImage.color = new Color(0, 0, 0, t / duration);
+            yield return null;
         }
+        fadeImage.color = new Color(0, 0, 0, 1); // 완전히 검게
     }
 }

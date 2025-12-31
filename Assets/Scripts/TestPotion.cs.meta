@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: 9a2a83dff0dd97549818582dcd2d3ae9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - pastelSpark: {fileID: 11400000, guid: 1c272ea13d62ec7488e91478f355cdd9, type: 2}
+  - helioFlare: {fileID: 11400000, guid: a79848556f759ee42936289e0898bcad, type: 2}
+  - player: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

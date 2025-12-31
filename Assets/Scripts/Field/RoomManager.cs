@@ -22,18 +22,96 @@ public class RoomManager : MonoBehaviour
     public Camera mainCamera;
     public Transform player;
 
+    // ★ [중요] 여기에 프로젝트의 모든 RoomData(0번, 1번, 2번...)를 드래그해서 넣으세요!
+    [Header("Data Source")]
+    public List<RoomData> allMapRooms = new List<RoomData>();
+
     private RoomData currentRoomData;
     private Dictionary<string, GameObject> loadedRooms = new Dictionary<string, GameObject>();
     private bool isCoolingDown = false;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
+
+        loadedRooms = new Dictionary<string, GameObject>();
     }
 
+    void Start()
+    {
+
+        loadedRooms.Clear();
+
+        // ★ [핵심 수정] 플레이어가 "저장된 위치"를 가지고 있다면?
+        if (Player.Instance != null && Player.Instance.HasSavedPosition)
+        {
+            Debug.Log("저장된 위치가 있어서 '첫 방 초기화'를 건너뜁니다.");
+
+            player = Player.Instance.transform;
+
+            // 초기화(InitializeFirstRoom) 대신, 내 위치에 맞는 방을 찾아서 복구시킴
+            StartCoroutine(RestoreRoomState());
+        }
+        else
+        {
+            // 저장된 위치가 없을 때만 (진짜 처음 시작할 때만) 1번 방 생성
+            Debug.Log("처음 시작이므로 1번 방을 생성합니다.");
+
+            // 주의: startRoomData 변수가 인스펙터에 연결되어 있어야 함
+            // 만약 startRoomData 변수가 없다면 기존에 쓰시던 방식대로 호출하세요.
+            // 예: InitializeFirstRoom(allMapRooms[0], Vector3.zero); 
+        }
+    }
+
+    // ★ 방 복구 코루틴 (핵심 기능 추가됨)
+    IEnumerator RestoreRoomState()
+    {
+        yield return null; // Player 위치가 확정될 때까지 1프레임 대기
+
+        // 1. 플레이어 위치를 기준으로 그리드 좌표 계산 (예: x=32 -> (1, 0))
+        int gridX = Mathf.RoundToInt(player.position.x / gridWidth);
+        int gridY = Mathf.RoundToInt(player.position.y / gridHeight);
+        Vector2Int playerGridCoord = new Vector2Int(gridX, gridY);
+
+        // 2. 전체 방 목록(allMapRooms) 뒤져서 현재 좌표랑 일치하는 방 찾기
+        RoomData matchData = null;
+        foreach (var data in allMapRooms)
+        {
+            if (data.roomCoord == playerGridCoord)
+            {
+                matchData = data;
+                break;
+            }
+        }
+
+        // 3. 맞는 방을 찾았다면 소환!
+        if (matchData != null)
+        {
+            // 이미 로드된 게 아닐 때만 소환
+            if (!loadedRooms.ContainsKey(matchData.roomID))
+            {
+                SpawnRoom(matchData, CalculateRoomPosition(matchData));
+                currentRoomData = matchData;
+                UpdateNeighborPreload(matchData); // 이웃 방들도 미리 로딩
+
+                Debug.Log($"[RoomManager] 좌표 {playerGridCoord}에서 {matchData.roomID}번 방을 복구했습니다.");
+            }
+
+            // 4. 카메라도 강제로 맞춤
+            SyncCameraToPlayer();
+        }
+        else
+        {
+            Debug.LogWarning($"[RoomManager] 좌표 {playerGridCoord}에 해당하는 RoomData를 'All Map Rooms' 리스트에서 찾을 수 없습니다!");
+        }
+    }
+
+    // ... (InitializeFirstRoom, RequestMove 등 나머지 코드는 기존과 동일) ...
     public void InitializeFirstRoom(RoomData startRoom, Vector3 position)
     {
+        // 만약 이미 방이 복구되었다면(RestoreRoomState가 성공했다면) 초기화 무시
+        if (currentRoomData != null) return;
+
         currentRoomData = startRoom;
         SpawnRoom(startRoom, position);
         UpdateNeighborPreload(startRoom);
@@ -57,7 +135,6 @@ public class RoomManager : MonoBehaviour
         if (BossManager.Instance != null && BossManager.Instance.IsBossActive) return;
         if (isCoolingDown) return;
 
-        // 로딩이 안 되어 있으면 방어 코드
         if (!loadedRooms.ContainsKey(nextRoom.roomID))
         {
             SpawnRoom(nextRoom, CalculateRoomPosition(nextRoom));
@@ -70,15 +147,11 @@ public class RoomManager : MonoBehaviour
     {
         isCoolingDown = true;
         SetPlayerInput(false);
-
-        // ★ [핵심 추가] 목표 방을 "새것"으로 교체합니다. (풀, 몬스터, 보스 리셋)
         RefreshTargetRoom(nextRoom);
-        // -----------------------------------------------------------------
 
         Vector3 startCameraPos = mainCamera.transform.position;
         Vector3 startPlayerPos = player.position;
 
-        // 1. 카메라 목표 계산
         float moveDistance = 0f;
         if (direction.x != 0)
             moveDistance = (distanceOverride > 0) ? distanceOverride : gridWidth;
@@ -88,10 +161,8 @@ public class RoomManager : MonoBehaviour
         Vector3 moveAmount = new Vector3(direction.x * moveDistance, direction.y * moveDistance, 0);
         Vector3 targetCameraPos = startCameraPos + moveAmount;
 
-        // 2. 플레이어 목표 계산
         Vector3 targetPlayerPos = GetTargetPosition(direction, targetCameraPos);
 
-        // 3. 이동 연출
         float elapsed = 0;
         while (elapsed < transitionTime)
         {
@@ -102,19 +173,16 @@ public class RoomManager : MonoBehaviour
             yield return null;
         }
 
-        // 4. 도착 확정
         mainCamera.transform.position = targetCameraPos;
         player.position = targetPlayerPos;
 
         if (player.TryGetComponent<Rigidbody2D>(out var rb)) rb.linearVelocity = Vector2.zero;
 
-        // 5. 데이터 갱신
         currentRoomData = nextRoom;
         UpdateNeighborPreload(nextRoom);
 
         SetPlayerInput(true);
 
-        // 엔딩 체크
         if (loadedRooms.ContainsKey(nextRoom.roomID))
         {
             GameObject roomObj = loadedRooms[nextRoom.roomID];
@@ -126,26 +194,20 @@ public class RoomManager : MonoBehaviour
         isCoolingDown = false;
     }
 
-    // ★ [추가된 함수] 목표 방을 파괴하고 그 자리에 다시 생성함
     private void RefreshTargetRoom(RoomData targetRoom)
     {
         if (loadedRooms.ContainsKey(targetRoom.roomID))
         {
-            // 1. 기존에 미리 로딩되어 있던 방(헌것)을 찾는다.
             GameObject oldRoom = loadedRooms[targetRoom.roomID];
-            Vector3 roomPos = oldRoom.transform.position; // 위치 기억
+            Vector3 roomPos = oldRoom.transform.position;
 
-            // 2. 헌 방을 파괴한다. (잘린 풀, 죽은 몬스터 삭제됨)
             Destroy(oldRoom);
             loadedRooms.Remove(targetRoom.roomID);
 
-            // 3. 프리팹에서 새 방을 생성한다. (모든 게 초기화된 상태)
             SpawnRoom(targetRoom, roomPos);
-
-            // 참고: SpawnRoom 내부에서 loadedRooms에 다시 추가하고, 
-            // Instantiate 되면서 Spawner의 Start()가 실행되어 몬스터도 다시 나옵니다.
         }
     }
+
     private Vector3 GetTargetPosition(Vector2 direction, Vector3 nextRoomCenterPos)
     {
         float currentHalfWidth = playableWidth / 2f;
@@ -155,13 +217,10 @@ public class RoomManager : MonoBehaviour
 
         if (direction == Vector2.up)
             targetPos = new Vector3(player.position.x, nextRoomCenterPos.y - currentHalfHeight + playerSpawnOffset, 0);
-
         else if (direction == Vector2.down)
             targetPos = new Vector3(player.position.x, nextRoomCenterPos.y + currentHalfHeight - playerSpawnOffset, 0);
-
         else if (direction == Vector2.right)
             targetPos = new Vector3(nextRoomCenterPos.x - currentHalfWidth + playerSpawnOffset, player.position.y, 0);
-
         else if (direction == Vector2.left)
             targetPos = new Vector3(nextRoomCenterPos.x + currentHalfWidth - playerSpawnOffset, player.position.y, 0);
 
@@ -202,9 +261,8 @@ public class RoomManager : MonoBehaviour
 
     private void SpawnRoom(RoomData data, Vector3 position)
     {
-        // Instantiate가 일어날 때, 방 프리팹에 붙은 Spawner의 Start()가 자동 실행됨 -> 몬스터 리스폰
         GameObject roomObj = Instantiate(data.roomPrefab, position, Quaternion.identity);
-        roomObj.name = data.roomID; // 디버깅 편하게 이름 설정
+        roomObj.name = data.roomID;
         loadedRooms.Add(data.roomID, roomObj);
     }
 
@@ -221,7 +279,6 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    // ★ [핵심] 플레이어 위치를 기반으로 카메라를 올바른 방 위치로 이동시킴
     public void SyncCameraToPlayer()
     {
         if (player == null)
@@ -230,20 +287,12 @@ public class RoomManager : MonoBehaviour
             else return;
         }
 
-        // 1. 플레이어의 현재 위치가 그리드 상에서 어디쯤인지 계산 (반올림)
-        // 예: 플레이어가 (30, 0)에 있으면 -> 32(방폭)로 나눠서 반올림 -> 1번 방이구나!
+        if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null) return;
+
         float targetX = Mathf.Round(player.position.x / gridWidth) * gridWidth;
         float targetY = Mathf.Round(player.position.y / gridHeight) * gridHeight;
 
-        // 2. 카메라 강제 이동
-        if (mainCamera != null)
-        {
-            mainCamera.transform.position = new Vector3(targetX, targetY, -10f);
-            Debug.Log($"룸매니저: 카메라를 ({targetX}, {targetY}) 위치로 강제 이동함!");
-        }
-
-        // 3. (선택사항) 만약 '시작 방'이 엉뚱한 곳에 로딩되는 걸 막으려면
-        // 여기서 currentRoomData를 갱신해주는 로직이 필요하지만, 
-        // 일단 카메라만 맞춰도 게임 진행엔 문제 없습니다.
+        mainCamera.transform.position = new Vector3(targetX, targetY, -10f);
     }
 }
