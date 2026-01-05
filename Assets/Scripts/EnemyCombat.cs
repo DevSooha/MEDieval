@@ -1,37 +1,61 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyCombat : MonoBehaviour
 {
     [Header("Combat")]
     public int enemyHP = 3;
-    public int damageAmount = 1;
+    public int damageAmount = 1; // 플레이어와 충돌 시 줄 데미지 (충돌 처리에서 사용)
 
     [Header("Drop")]
     public GameObject worldItemPrefab;
-    public ItemData pastelbloomItemData;   // ⭐ 기존 ItemData 사용
+    public ItemData pastelbloomItemData;
     public int dropAmount = 1;
     public float dropChance = 1f;
 
+    [Header("Feedback")]
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
+
     private bool isDead = false;
+
+    void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
+    }
 
     public void EnemyTakeDamage(int amount)
     {
-        // ★ 추가: 이미 죽은 상태면 아무것도 하지 마라!
         if (isDead) return;
 
         enemyHP -= amount;
 
+        if (spriteRenderer != null)
+        {
+            StopCoroutine("FlashColor");
+            StartCoroutine(FlashColor());
+        }
+
         if (enemyHP <= 0)
         {
-            Die(); // 죽는 로직을 따로 분리하면 깔끔합니다
+            Die();
         }
+    }
+
+    IEnumerator FlashColor()
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = originalColor;
     }
 
     void Die()
     {
-        // ★ 핵심: 들어오자마자 "나 죽었다" 표시
         isDead = true;
-
         DropItem();
         Destroy(gameObject);
     }
@@ -40,8 +64,7 @@ public class EnemyCombat : MonoBehaviour
     {
         if (Random.value > dropChance) return;
 
-        Vector3 dropPos =
-            transform.position + (Vector3)Random.insideUnitCircle.normalized * 0.5f;
+        Vector3 dropPos = transform.position + (Vector3)Random.insideUnitCircle.normalized * 0.5f;
 
         GameObject item = Instantiate(
             worldItemPrefab,
@@ -51,7 +74,6 @@ public class EnemyCombat : MonoBehaviour
 
         WorldItem wi = item.GetComponent<WorldItem>();
 
-        // WorldItem이 확실히 있는지 체크 (안전장치)
         if (wi != null)
         {
             wi.Init(pastelbloomItemData, dropAmount);
@@ -64,5 +86,4 @@ public class EnemyCombat : MonoBehaviour
             }
         }
     }
-
 }

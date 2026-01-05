@@ -1,55 +1,70 @@
-using UnityEngine;
 using TMPro;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int HP;
-    public int maxHP;
+    [Header("Health Settings")]
+    public int maxHealth = 5;
+    public int currentHealth;
+
+    [Header("Invincibility (무적)")]
+    public float iframeDuration = 1.0f;
+    public int numberOfFlashes = 3;
+    private bool isInvincible = false;
+
+    [Header("References")]
+    private SpriteRenderer spriteRenderer;
     public TMP_Text healthBar;
 
     void Start()
     {
-        HP = maxHP;
+        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         UpdateHealthBar();
     }
 
-    // 필요할 때만 호출
-    public void TakeDamage(int amount)
+    public void TakeDamage(int damage)
     {
-        Debug.Log($"체력: {HP}");
-        HP -= amount;
-        if (HP > maxHP)
-            HP = maxHP;
+        if (isInvincible || currentHealth <= 0) return;
 
-        if (HP < 0)
-            HP = 0;
+        currentHealth -= damage;
+        Debug.Log($"플레이어 피격! 남은 체력: {currentHealth}");
 
         UpdateHealthBar();
 
-        if (HP == 0)
+        if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
     }
 
-    // ★ [추가된 부분] 체력 회복 함수
     public void Heal(int amount)
     {
-        HP += amount;
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
 
-        // 최대 체력을 넘지 않게 고정
-        if (HP > maxHP)
-        {
-            HP = maxHP;
-        }
+        Debug.Log($"플레이어 회복! 현재 체력: {currentHealth}");
 
         UpdateHealthBar();
-        Debug.Log($"체력 회복! 현재 HP: {HP}");
+    }
+
+    void Die()
+    {
+        Debug.Log("플레이어 사망...");
     }
 
     private void UpdateHealthBar()
     {
         if (healthBar != null)
-            healthBar.text = "HP: " + HP + " / " + maxHP;
+        {
+            healthBar.text = "HP: " + currentHealth + " / " + maxHealth;
+        }
+        else
+        {
+            Debug.LogWarning("HealthBar가 연결되지 않았습니다! 인스펙터를 확인하세요.");
+        }
     }
 }

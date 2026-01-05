@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // Required for Button
+using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -20,7 +20,6 @@ public class PlayerInteraction : MonoBehaviour
 
     public bool IsInteractable => canInteract;
 
-    // Register Scene Loaded Event
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -37,39 +36,31 @@ public class PlayerInteraction : MonoBehaviour
         interactionCollider.radius = interactionRadius;
         interactionCollider.isTrigger = true;
 
-        FindUIAndLinkButtons(); // Initial find
+        FindUIAndLinkButtons();
     }
 
-    // Called every time a scene is loaded
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 1. Reset Interaction States
         isCampfire = false;
         canInteract = false;
         currentNPC = null;
         currentItem = null;
 
-        // 2. Find UI and Re-link Buttons
         FindUIAndLinkButtons();
     }
 
     void FindUIAndLinkButtons()
     {
-        // If already connected and active, just disable and return
         if (craftUIWindow != null)
         {
             craftUIWindow.SetActive(false);
-            // We still need to check buttons just in case, but usually finding the window is enough if references held
-            // However, safe to re-find if null
         }
 
-        // Try to find the UI Window even if it's inactive
         if (craftUIWindow == null)
         {
             GameObject foundObj = GameObject.Find("CraftUIWindow");
             if (foundObj == null)
             {
-                // Fallback: Search inside Canvas
                 Canvas canvas = FindFirstObjectByType<Canvas>();
                 if (canvas != null)
                 {
@@ -80,17 +71,15 @@ public class PlayerInteraction : MonoBehaviour
             craftUIWindow = foundObj;
         }
 
-        // Link Buttons if window is found
         if (craftUIWindow != null)
         {
-            // Important: Names "Btn_Craft" and "Btn_Potion" must match your Hierarchy exactly!
             Button btnCraft = craftUIWindow.transform.Find("Btn_Craft")?.GetComponent<Button>();
             Button btnPotion = craftUIWindow.transform.Find("Btn_Potion")?.GetComponent<Button>();
 
             if (btnCraft != null)
             {
-                btnCraft.onClick.RemoveAllListeners(); // Clear old links
-                btnCraft.onClick.AddListener(GoCrafting); // Link new method
+                btnCraft.onClick.RemoveAllListeners();
+                btnCraft.onClick.AddListener(GoCrafting);
             }
 
             if (btnPotion != null)
@@ -99,13 +88,10 @@ public class PlayerInteraction : MonoBehaviour
                 btnPotion.onClick.AddListener(GoPotion);
             }
 
-            craftUIWindow.SetActive(false); // Ensure it starts hidden
+            craftUIWindow.SetActive(false);
         }
     }
 
-    // ... (Update, OnTriggerEnter/Exit, LoadSceneWithFade, etc. remain the same)
-
-    // Update Method for Interaction
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.F))
@@ -114,12 +100,28 @@ public class PlayerInteraction : MonoBehaviour
 
             if (Player.Instance != null) Player.Instance.CancelAttack();
 
+            // 1순위: 아이템 줍기 (가장 먼저 체크)
             if (currentItem != null)
             {
                 PickUpItem();
                 return;
             }
 
+            // 2순위: NPC 대화 (순서를 위로 올림!)
+            if (currentNPC != null)
+            {
+                if (DialogueManager.Instance == null) return;
+
+                // 대화 시작 혹은 진행
+                if (!DialogueManager.Instance.IsDialogueActive())
+                    StartDialogue();
+                else
+                    DialogueManager.Instance.AdvanceDialogue();
+
+                return;
+            }
+
+            // 3순위: 모닥불 (NPC가 없을 때만 실행됨)
             if (isCampfire)
             {
                 if (craftUIWindow != null)
@@ -129,34 +131,24 @@ public class PlayerInteraction : MonoBehaviour
                 }
                 else
                 {
-                    // Fail-safe re-find
                     FindUIAndLinkButtons();
                     if (craftUIWindow != null) craftUIWindow.SetActive(true);
                 }
-                return;
-            }
-
-            if (currentNPC != null)
-            {
-                // Dialogue logic...
-                if (DialogueManager.Instance == null) return;
-                if (!DialogueManager.Instance.IsDialogueActive())
-                    StartDialogue();
-                else
-                    DialogueManager.Instance.AdvanceDialogue();
             }
         }
     }
-
-    // ... (Rest of your script methods: PickUpItem, StartDialogue, OnTriggerEnter/Exit) ...
 
     public void GoPotion() { StartCoroutine(LoadSceneWithFade("Potions")); }
     public void GoCrafting() { StartCoroutine(LoadSceneWithFade("Crafting")); }
 
     IEnumerator LoadSceneWithFade(string sceneName)
     {
-        if (Player.Instance != null) Player.Instance.SaveCurrentPosition();
-        if (FadeManager.Instance != null) yield return StartCoroutine(FadeManager.Instance.FadeOut(0.5f));
+        if (Player.Instance != null)
+        {
+            Player.Instance.SetCanMove(false);
+            Player.Instance.SaveCurrentPosition();
+        }
+        if (UIManager.Instance != null) yield return StartCoroutine(UIManager.Instance.FadeOut(0.3f));
         SceneManager.LoadScene(sceneName);
     }
 
@@ -189,6 +181,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log($"충돌 감지됨: {other.name} / 태그: {other.tag}");
+
         if (other.GetComponent<NPC>() == currentNPC) { currentNPC = null; }
         else if (other.CompareTag("Campfire"))
         {

@@ -4034,10 +4034,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3608016918403488883}
     m_Modifications:
-    - target: {fileID: 1399808001312839289, guid: 778e1a3571ddbae439a7b7880b7e379d, type: 3}
-      propertyPath: frontSprite
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5097189185197493474, guid: 778e1a3571ddbae439a7b7880b7e379d, type: 3}
       propertyPath: m_Name
       value: "\uBC14\uC2A4\uBD80\uC778"
@@ -4368,6 +4364,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3608016918403488883}
     m_Modifications:
+    - target: {fileID: 6620527751913453214, guid: de68f2c1995426a4da34277594378d21, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6906254360130046831, guid: de68f2c1995426a4da34277594378d21, type: 3}
       propertyPath: m_Name
       value: Campfire

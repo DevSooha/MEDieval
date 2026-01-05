@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
         animator.SetBool("IsMoving", isMoving);
 
         // 4. 공격 입력
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             StartCoroutine(PerformAttack());
         }
@@ -212,26 +212,23 @@ public class Player : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 1. 화면 밝아지기 (페이드 인) - 0.5초 동안
-        if (FadeManager.Instance != null)
+        if (UIManager.Instance != null)
         {
-            StartCoroutine(FadeManager.Instance.FadeIn(0.5f));
+            StartCoroutine(UIManager.Instance.FadeIn(0.3f));
         }
 
         // 2. 위치 잡기
-        if (scene.name == "Field" || scene.name == "MainScene")
+        if (scene.name == "Field")
         {
             if (hasSavedPosition)
             {
-                transform.position = savedPosition; // 저장된 위치로 복구
-                if (rb != null) rb.linearVelocity = Vector2.zero; // 미끄러짐 방지
+                transform.position = savedPosition;
+                if (rb != null) rb.linearVelocity = Vector2.zero;
             }
             SetCanMove(true);
-
-            // 카메라 맞추기
             StartCoroutine(ForceCameraSync());
         }
-        else // 제작 씬, 포션 씬 등
+        else
         {
             // 미니게임 씬에서는 (0,0)이나 지정된 스폰 포인트로 강제 이동
             transform.position = new Vector3(0, 0, 0);

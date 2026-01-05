@@ -60,7 +60,7 @@ public class PlayerAttackSystem : MonoBehaviour
             if (groundObj != null) floorTilemap = groundObj.GetComponent<Tilemap>();
             else
             {
-                GameObject floorObj = GameObject.Find("Floor"); // 이름으로 찾기 시도
+                GameObject floorObj = GameObject.Find("Floor");
                 if (floorObj != null) floorTilemap = floorObj.GetComponent<Tilemap>();
             }
         }
@@ -140,8 +140,8 @@ public class PlayerAttackSystem : MonoBehaviour
 
         if (x != 0 || y != 0)
         {
-            if (Mathf.Abs(x) >= Mathf.Abs(y)) aimDirection = new Vector2(x > 0 ? 1 : -1, 0);
-            else aimDirection = new Vector2(0, y > 0 ? 1 : -1);
+            // .normalized를 붙여 대각선일 때 길이가 1보다 커지는 것을 방지
+            aimDirection = new Vector2(x, y).normalized;
         }
     }
 
@@ -249,7 +249,6 @@ public class PlayerAttackSystem : MonoBehaviour
         }
     }
 
-    // [복원됨] 타일 유효성 검사
     bool IsValidTile(Vector2 pos)
     {
         if (floorTilemap != null)
@@ -258,10 +257,9 @@ public class PlayerAttackSystem : MonoBehaviour
             // 타일이 존재해야 던질 수 있음 (벽이나 허공 방지)
             return floorTilemap.HasTile(cellPos);
         }
-        return true; // 타일맵 없으면 그냥 통과
+        return true;
     }
 
-    // [복원됨] 스택 마커 표시
     void ShowStackMarker(int stackIndex)
     {
         if (stackMarkerPrefab == null) return;
@@ -271,7 +269,6 @@ public class PlayerAttackSystem : MonoBehaviour
         activeMarkers.Add(marker);
     }
 
-    // [복원됨] 마커 지우기
     void ClearMarkers()
     {
         foreach (GameObject marker in activeMarkers)
@@ -281,7 +278,6 @@ public class PlayerAttackSystem : MonoBehaviour
         activeMarkers.Clear();
     }
 
-    // [복원됨] 특정 거리에 폭탄 생성
     void SpawnBombAt(int distance)
     {
         if (slots.Count == 0) return;
@@ -290,26 +286,34 @@ public class PlayerAttackSystem : MonoBehaviour
 
         if (!IsValidTile(spawnPos)) return;
 
+        // 1. 프리팹 생성 (인스펙터에 등록된 defaultBombPrefab 혹은 슬롯별 프리팹)
         GameObject prefabToUse = slots[0].specificPrefab != null ? slots[0].specificPrefab : defaultBombPrefab;
 
         if (prefabToUse != null)
         {
             GameObject bombObj = Instantiate(prefabToUse, spawnPos, Quaternion.identity);
 
-            // ★ 수정된 부분: Bomb 스크립트를 가져와서 데이터를 넣어줍니다.
+            // 2. 생성된 오브젝트에서 Bomb 컴포넌트 가져오기
             Bomb bombScript = bombObj.GetComponent<Bomb>();
 
-            // 현재 슬롯의 아이템 데이터가 PotionData라면 주입
-            if (bombScript != null && slots[0].itemData is PotionData pData)
+            // 3. ★ 핵심: PotionData 주입 (이 부분이 있어야 새로운 로직이 작동합니다)
+            if (bombScript != null)
             {
-                bombScript.Initialize(pData);
+                // 현재 슬롯의 itemData를 PotionData로 형변환하여 주입
+                if (slots[0].itemData is PotionData pData)
+                {
+                    bombScript.Initialize(pData);
+                }
+                else
+                {
+                    Debug.LogError("현재 슬롯의 아이템이 PotionData 형식이 아닙니다!");
+                }
             }
 
             UseAmmo(1);
         }
     }
 
-    // ★ [복원됨] 스택만큼 폭탄 생성 (멀티샷)
     void SpawnBombsByStack()
     {
         if (currentStack == 0)
