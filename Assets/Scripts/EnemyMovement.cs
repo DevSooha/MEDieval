@@ -30,7 +30,7 @@ public class EnemyMovement : MonoBehaviour
             detectionPoint = transform.Find("DetectionPoint");
         }
         
-        ChangeState(EnemyState.Idle);
+        ChangeState(EnemyState.IsMoving);
         
         Debug.Log($"EnemyMovement initialized. Player layer mask: {playerLayer.value}");
     }
@@ -41,22 +41,22 @@ public class EnemyMovement : MonoBehaviour
         {
             attackCooldownTimer -= Time.deltaTime;
         }
-        if (enemyState != EnemyState.Attacking)
+        if (enemyState != EnemyState.Attack)
         {
             CheckForPlayer();
         }
 
         switch (enemyState)
         {
-            case EnemyState.Idle:
+            case EnemyState.IsMoving:
                 Stop();
                 break;
 
-            case EnemyState.Chasing:
+            case EnemyState.Chase:
                 Chase();
                 break;
 
-            case EnemyState.Attacking:
+            case EnemyState.Attack:
                 Stop();
                 break;
         }
@@ -82,15 +82,15 @@ public class EnemyMovement : MonoBehaviour
             if (distance <= attackRange && attackCooldownTimer <= 0)
             {
                 attackCooldownTimer = attackCooldown;
-                ChangeState(EnemyState.Attacking);
+                ChangeState(EnemyState.Attack);
             }
             else if (distance <= detectRange && distance > attackRange)
             {
-                ChangeState(EnemyState.Chasing);
+                ChangeState(EnemyState.Chase);
             }
             else
             {
-                ChangeState(EnemyState.Idle);
+                ChangeState(EnemyState.IsMoving);
             }
         }
     }
@@ -102,7 +102,7 @@ public class EnemyMovement : MonoBehaviour
         // 감지 범위를 벗어남
         if (distance > detectRange)
         {
-            ChangeState(EnemyState.Idle);
+            ChangeState(EnemyState.IsMoving);
             Stop();
             return;
         }
@@ -126,21 +126,21 @@ public class EnemyMovement : MonoBehaviour
 
     private void ChangeState(EnemyState newState)
     {
-        if (enemyState == EnemyState.Idle)
-            anim.SetBool("IsIdle", false);
-        else if (enemyState == EnemyState.Chasing)
-            anim.SetBool("IsChasing", false);
-        else if (enemyState == EnemyState.Attacking)
-            anim.SetBool("IsAttacking", false);
+        if (enemyState == EnemyState.IsMoving)
+            anim.SetTrigger("IsMoving");
+        else if (enemyState == EnemyState.Chase)
+            anim.SetBool("Chase", false);
+        else if (enemyState == EnemyState.Attack)
+            anim.SetBool("Attack", false);
 
         enemyState = newState;
 
-        if (enemyState == EnemyState.Idle)
-            anim.SetBool("IsIdle", true);
-        else if (enemyState == EnemyState.Chasing)
-            anim.SetBool("IsChasing", true);
-        else if (enemyState == EnemyState.Attacking)
-            anim.SetBool("IsAttacking", true);
+        if (enemyState == EnemyState.IsMoving)
+            anim.SetTrigger("IsMoving");
+        else if (enemyState == EnemyState.Chase)
+            anim.SetBool("Chase", true);
+        else if (enemyState == EnemyState.Attack)
+            anim.SetBool("Attack", true);
     }
     private void OnDrawGizmos()
     {
@@ -155,7 +155,7 @@ public class EnemyMovement : MonoBehaviour
 
 public enum EnemyState
 {
-    Idle,
-    Chasing,
-    Attacking,
+    IsMoving,
+    Chase,
+    Attack,
 }
